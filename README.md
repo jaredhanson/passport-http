@@ -2,6 +2,52 @@
 
 HTTP Basic and Digest authentication strategies for [Passport](https://github.com/jaredhanson/passport).
 
+## Installation
+
+    $ npm install passport-http
+
+## Usage
+
+#### Configure Strategy
+
+The HTTP Basic authentication strategy authenticates users using a userid and
+password.  The strategy requires a `verify` callback, which accepts these
+credentials and calls `done` providing a user.
+
+    passport.use(new BasicStrategy(
+      function(userid, password, done) {
+        User.findOne({ username: userid }, function (err, user) {
+          if (err) { return done(err); }
+          if (!user) { return done(null, false); }
+          if (!user.verifyPassword(password)) { return done(null, false); }
+          return done(null, user);
+        });
+      }
+    ));
+
+#### Authenticate Requests
+
+Use `passport.authenticate()`, specifying the `'basic'` strategy, to
+authenticate requests.  Requests containing an 'Authorization' header do not
+require session support, so the `session` option can be set to `false`.
+
+For example, as route middleware in an [Express](http://expressjs.com/)
+application:
+
+    app.post('/login', 
+      passport.authenticate('basic', { session: false }),
+      function(req, res) {
+        res.json(req.user);
+      });
+
+#### Examples
+
+For a complete, working example, refer to the [Basic example](https://github.com/jaredhanson/passport-http/tree/master/examples/basic).
+
+## Credits
+
+  - [Jared Hanson](http://github.com/jaredhanson)
+
 ## License
 
 (The MIT License)
