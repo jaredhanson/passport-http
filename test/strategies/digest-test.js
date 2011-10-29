@@ -229,6 +229,214 @@ vows.describe('DigestStrategy').addBatch({
     },
   },
   
+  'strategy handling a request with invalid password': {
+    topic: function() {
+      var strategy = new DigestStrategy(
+        function(username, done) {
+          done(null, 'idontknow');
+        },
+        function(username, options, done) {
+          done(null, { username: username });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+        
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'Digest username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.match(challenge, /^Digest realm="Users", nonce="\w{32}"$/);
+      },
+    },
+  },
+  
+  'strategy handling a request that is not validated': {
+    topic: function() {
+      var strategy = new DigestStrategy(
+        function(username, done) {
+          done(null, 'secret');
+        },
+        function(username, options, done) {
+          done(null, false);
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+        
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'Digest username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.match(challenge, /^Digest realm="Users", nonce="\w{32}"$/);
+      },
+    },
+  },
+  
+  'strategy handling a request that encounters an error during validation': {
+    topic: function() {
+      var strategy = new DigestStrategy(
+        function(username, done) {
+          done(null, 'secret');
+        },
+        function(username, options, done) {
+          done(new Error('something went wrong'));
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.error = function(err) {
+          self.callback(null, err);
+        }
+        
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'Digest username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not call success or fail' : function(err, e) {
+        assert.isNull(err);
+      },
+      'should call error' : function(err, e) {
+        assert.instanceOf(e, Error);
+      },
+    },
+  },
+  
+  'strategy handling a request that does not have a shared secret': {
+    topic: function() {
+      var strategy = new DigestStrategy(
+        function(username, done) {
+          done(null, false);
+        },
+        function(username, options, done) {
+          done(null, { username: username });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+        
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'Digest username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.match(challenge, /^Digest realm="Users", nonce="\w{32}"$/);
+      },
+    },
+  },
+  
+  'strategy handling a request that encounters an error while finding shared secret': {
+    topic: function() {
+      var strategy = new DigestStrategy(
+        function(username, done) {
+          done(new Error('something went wrong'));
+        },
+        function(username, options, done) {
+          done(null, { username: username });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.error = function(err) {
+          self.callback(null, err);
+        }
+        
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'Digest username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not call success or fail' : function(err, e) {
+        assert.isNull(err);
+      },
+      'should call error' : function(err, e) {
+        assert.instanceOf(e, Error);
+      },
+    },
+  },
+  
   'strategy handling a request without authorization credentials': {
     topic: function() {
       var strategy = new DigestStrategy(
