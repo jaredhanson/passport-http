@@ -43,6 +43,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(new Error('should not be called'));
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
@@ -84,6 +85,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(new Error('should not be called'));
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="720rZDMBH44rIsKKSz75zd0fMvcQaL8Y", uri="/", response="1db489e2049a77d27b6f05c917f9aa58", algorithm="MD5"';
@@ -125,6 +127,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(new Error('should not be called'));
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="T1vogipt8GzzWyCZt7U3TNV5XsarMW8y", uri="/", cnonce="MTMxOTkx", nc=00000001, qop="auth", response="7495a912e5c52e1e9ac92793c6f5c229"';
@@ -166,6 +169,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(new Error('should not be called'));
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="Ag1nqGybX7GXpXGWjTJs0pCCRboeLnbI", uri="/", cnonce="MTMxOTkx", nc=00000001, qop="auth", response="db5b2989137bf89622d8cb1ea583eec9", algorithm="MD5-sess"';
@@ -210,6 +214,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, err);
         }
         
+        req.url = '/';
         req.method = 'POST';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="2HQNNVPOZXBz47jSs3POzWDJn15xSsJp", uri="/", cnonce="MTMxOTky", nc=00000001, qop="auth-int", response="9c63f9e51406979ba661dd820cc21122"';
@@ -253,6 +258,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, challenge);
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
@@ -293,6 +299,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, challenge);
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
@@ -336,6 +343,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, err);
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
@@ -377,6 +385,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, challenge);
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
@@ -420,6 +429,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, err);
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
@@ -461,6 +471,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, challenge);
         }
         
+        req.url = '/';
         req.headers = {};
         process.nextTick(function () {
           strategy.authenticate(req);
@@ -499,6 +510,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, challenge);
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'XXXXX username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
@@ -539,6 +551,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, challenge);
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest';
@@ -576,9 +589,13 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(new Error('should not be called'));
         }
         strategy.fail = function(challenge) {
-          self.callback(null, challenge);
+          self.callback(new Error('should not be called'));
+        }
+        strategy.error = function(err) {
+          self.callback(null, err);
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest *****';
@@ -587,10 +604,56 @@ vows.describe('DigestStrategy').addBatch({
         });
       },
       
-      'should fail authentication with challenge' : function(err, challenge) {
-        // fail action was called, resulting in test callback
+      'should not call success or fail' : function(err, e) {
         assert.isNull(err);
-        assert.match(challenge, /^Digest realm="Users", nonce="\w{32}"$/);
+      },
+      'should call error' : function(err, e) {
+        assert.instanceOf(e, Error);
+      },
+    },
+  },
+  
+  'strategy handling a request with non-matching uri': {
+    topic: function() {
+      var strategy = new DigestStrategy({ algorithm: 'MD5' },
+        function(username, done) {
+          done(null, 'secret');
+        },
+        function(username, options, done) {
+          done(null, { username: username });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.error = function(err) {
+          self.callback(null, err);
+        }
+        
+        req.url = '/admin';
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'Digest username="bob", realm="Users", nonce="720rZDMBH44rIsKKSz75zd0fMvcQaL8Y", uri="/", response="1db489e2049a77d27b6f05c917f9aa58", algorithm="MD5"';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not call success or fail' : function(err, e) {
+        assert.isNull(err);
+      },
+      'should call error' : function(err, e) {
+        assert.instanceOf(e, Error);
       },
     },
   },
@@ -622,6 +685,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, err);
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="720rZDMBH44rIsKKSz75zd0fMvcQaL8Y", uri="/", response="1db489e2049a77d27b6f05c917f9aa58", algorithm="XXX"';
@@ -666,6 +730,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, err);
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="T1vogipt8GzzWyCZt7U3TNV5XsarMW8y", uri="/", cnonce="MTMxOTkx", nc=00000001, qop="xxxx", response="7495a912e5c52e1e9ac92793c6f5c229"';
@@ -707,6 +772,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(new Error('should not be called'));
         }
         
+        req.url = '/';
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'DIGEST username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
@@ -748,6 +814,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, challenge);
         }
         
+        req.url = '/';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
         process.nextTick(function () {
@@ -787,6 +854,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, challenge);
         }
         
+        req.url = '/';
         req.headers = {};
         process.nextTick(function () {
           strategy.authenticate(req);
@@ -825,6 +893,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, challenge);
         }
         
+        req.url = '/';
         req.headers = {};
         process.nextTick(function () {
           strategy.authenticate(req);
@@ -863,6 +932,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, challenge);
         }
         
+        req.url = '/';
         req.headers = {};
         process.nextTick(function () {
           strategy.authenticate(req);
@@ -901,6 +971,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, challenge);
         }
         
+        req.url = '/';
         req.headers = {};
         process.nextTick(function () {
           strategy.authenticate(req);
@@ -939,6 +1010,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, challenge);
         }
         
+        req.url = '/';
         req.headers = {};
         process.nextTick(function () {
           strategy.authenticate(req);
@@ -977,6 +1049,7 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, challenge);
         }
         
+        req.url = '/';
         req.headers = {};
         process.nextTick(function () {
           strategy.authenticate(req);
