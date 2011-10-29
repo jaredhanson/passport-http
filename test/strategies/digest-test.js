@@ -110,7 +110,7 @@ vows.describe('DigestStrategy').addBatch({
           done(null, 'secret');
         },
         function(username, options, done) {
-          done(null, { username: username });
+          done(null, { username: username, nonce: options.nonce, cnonce: options.cnonce, nc: options.nc });
         }
       );
       return strategy;
@@ -141,6 +141,9 @@ vows.describe('DigestStrategy').addBatch({
       },
       'should authenticate' : function(err, user) {
         assert.equal(user.username, 'bob');
+        assert.equal(user.nonce, 'T1vogipt8GzzWyCZt7U3TNV5XsarMW8y');
+        assert.equal(user.cnonce, 'MTMxOTkx');
+        assert.equal(user.nc, 1);
       },
     },
   },
