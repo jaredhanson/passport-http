@@ -226,6 +226,167 @@ vows.describe('DigestStrategy').addBatch({
     },
   },
   
+  'strategy handling a request with non-Digest authorization credentials': {
+    topic: function() {
+      var strategy = new DigestStrategy(
+        function(username, done) {
+          done(null, 'secret');
+        },
+        function(username, options, done) {
+          done(null, { username: username });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+        
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'XXXXX username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.match(challenge, /^Digest realm="Users", nonce="\w{32}"$/);
+      },
+    },
+  },
+  
+  'strategy handling a request with malformed authorization header': {
+    topic: function() {
+      var strategy = new DigestStrategy(
+        function(username, done) {
+          done(null, 'secret');
+        },
+        function(username, options, done) {
+          done(null, { username: username });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+        
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'Digest';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.match(challenge, /^Digest realm="Users", nonce="\w{32}"$/);
+      },
+    },
+  },
+  
+  'strategy handling a request with malformed authorization credentials': {
+    topic: function() {
+      var strategy = new DigestStrategy(
+        function(username, done) {
+          done(null, 'secret');
+        },
+        function(username, options, done) {
+          done(null, { username: username });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+        
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'Digest *****';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.match(challenge, /^Digest realm="Users", nonce="\w{32}"$/);
+      },
+    },
+  },
+  
+  'strategy handling a request with DIGEST scheme in capitalized letters': {
+    topic: function() {
+      var strategy = new DigestStrategy(
+        function(username, done) {
+          done(null, 'secret');
+        },
+        function(username, options, done) {
+          done(null, { username: username });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(null, user);
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'DIGEST username="bob", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="22e3e0a9bbefeb9d229905230cb9ddc8"';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not generate an error' : function(err, user) {
+        assert.isNull(err);
+      },
+      'should authenticate' : function(err, user) {
+        assert.equal(user.username, 'bob');
+      },
+    },
+  },
+  
   'strategy handling a request that is not verified against specific realm': {
     topic: function() {
       var strategy = new DigestStrategy({ realm: 'Administrators' },

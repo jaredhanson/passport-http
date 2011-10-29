@@ -177,7 +177,7 @@ vows.describe('BasicStrategy').addBatch({
         }
         
         req.headers = {};
-        req.headers.authorization = 'XXX Ym9iOnNlY3JldA==';
+        req.headers.authorization = 'XXXXX Ym9iOnNlY3JldA==';
         process.nextTick(function () {
           strategy.authenticate(req);
         });
@@ -191,7 +191,7 @@ vows.describe('BasicStrategy').addBatch({
     },
   },
   
-  'strategy handling a request with malformed authorization scheme': {
+  'strategy handling a request with malformed authorization header': {
     topic: function() {
       var strategy = new BasicStrategy(function(userid, password, done) {
         done(null, { username: userid, password: password });
@@ -245,7 +245,7 @@ vows.describe('BasicStrategy').addBatch({
         }
         
         req.headers = {};
-        req.headers.authorization = 'Basic XXXXX';
+        req.headers.authorization = 'Basic *****';
         process.nextTick(function () {
           strategy.authenticate(req);
         });
