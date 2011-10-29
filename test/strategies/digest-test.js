@@ -101,6 +101,52 @@ vows.describe('DigestStrategy').addBatch({
     },
   },
   
+  'strategy handling an invalid request with qop set to "auth-int" and auth-int support not implemented': {
+    topic: function() {
+      var strategy = new DigestStrategy({ qop: 'auth-int' },
+        function(username, done) {
+          done(null, 'secret');
+        },
+        function(username, options, done) {
+          done(null, { username: username });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.error = function(err) {
+          self.callback(null, err);
+        }
+        
+        req.method = 'POST';
+        req.headers = {};
+        req.headers.authorization = 'Digest username="bob", realm="Users", nonce="2HQNNVPOZXBz47jSs3POzWDJn15xSsJp", uri="/", cnonce="MTMxOTky", nc=00000001, qop="auth-int", response="9c63f9e51406979ba661dd820cc21122"';
+        // TODO: When support for auth-int is implemented, a raw entity body
+        //       will need to be provided.
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not call success or fail' : function(err, e) {
+        assert.isNull(err);
+      },
+      'should call error' : function(err, e) {
+        assert.instanceOf(e, Error);
+      },
+    },
+  },
+  
   'strategy handling a valid request with qop set to "auth" and algorithm set to "MD5-sess"': {
     topic: function() {
       var strategy = new DigestStrategy({ qop: 'auth', algorithm: 'MD5-sess' },
