@@ -93,7 +93,7 @@ vows.describe('DigestStrategy').addBatch({
       'should fail authentication with challenge' : function(err, challenge) {
         // fail action was called, resulting in test callback
         assert.isNull(err);
-        assert.match(challenge, /Digest realm="Users", nonce="\w{32}"/);
+        assert.match(challenge, /^Digest realm="Users", nonce="\w{32}"$/);
       },
     },
   },
@@ -132,7 +132,7 @@ vows.describe('DigestStrategy').addBatch({
       'should fail authentication with challenge' : function(err, challenge) {
         // fail action was called, resulting in test callback
         assert.isNull(err);
-        assert.match(challenge, /Digest realm="Administrators", nonce="\w{32}"/);
+        assert.match(challenge, /^Digest realm="Administrators", nonce="\w{32}"$/);
       },
     },
   },
@@ -170,7 +170,7 @@ vows.describe('DigestStrategy').addBatch({
       'should fail authentication with challenge' : function(err, challenge) {
         // fail action was called, resulting in test callback
         assert.isNull(err);
-        assert.match(challenge, /Digest realm="Users", domain="\/admin", nonce="\w{32}"/);
+        assert.match(challenge, /^Digest realm="Users", domain="\/admin", nonce="\w{32}"$/);
       },
     },
   },
@@ -208,7 +208,7 @@ vows.describe('DigestStrategy').addBatch({
       'should fail authentication with challenge' : function(err, challenge) {
         // fail action was called, resulting in test callback
         assert.isNull(err);
-        assert.match(challenge, /Digest realm="Users", domain="\/admin \/private", nonce="\w{32}"/);
+        assert.match(challenge, /^Digest realm="Users", domain="\/admin \/private", nonce="\w{32}"$/);
       },
     },
   },
@@ -246,7 +246,83 @@ vows.describe('DigestStrategy').addBatch({
       'should fail authentication with challenge' : function(err, challenge) {
         // fail action was called, resulting in test callback
         assert.isNull(err);
-        assert.match(challenge, /Digest realm="Users", nonce="\w{32}", opaque="abcdefg1234"/);
+        assert.match(challenge, /^Digest realm="Users", nonce="\w{32}", opaque="abcdefg1234"$/);
+      },
+    },
+  },
+  
+  'strategy handling a request without authorization credentials with qop option set': {
+    topic: function() {
+      var strategy = new DigestStrategy({ qop: 'auth' },
+        function(username, done) {
+          done(null, 'secret');
+        },
+        function(username, options, done) {
+          done(null, { username: username });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+        
+        req.headers = {};
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.match(challenge, /^Digest realm="Users", nonce="\w{32}", qop="auth"$/);
+      },
+    },
+  },
+  
+  'strategy handling a request without authorization credentials with multiple qop options set': {
+    topic: function() {
+      var strategy = new DigestStrategy({ qop: ['auth', 'auth-int'] },
+        function(username, done) {
+          done(null, 'secret');
+        },
+        function(username, options, done) {
+          done(null, { username: username });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+        
+        req.headers = {};
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.match(challenge, /^Digest realm="Users", nonce="\w{32}", qop="auth,auth-int"$/);
       },
     },
   },
