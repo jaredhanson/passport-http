@@ -213,6 +213,44 @@ vows.describe('DigestStrategy').addBatch({
     },
   },
   
+  'strategy handling a request without authorization credentials with opaque option set': {
+    topic: function() {
+      var strategy = new DigestStrategy({ opaque: 'abcdefg1234' },
+        function(username, done) {
+          done(null, 'secret');
+        },
+        function(username, options, done) {
+          done(null, { username: username });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+        
+        req.headers = {};
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.match(challenge, /Digest realm="Users", nonce="\w{32}", opaque="abcdefg1234"/);
+      },
+    },
+  },
+  
   'strategy constructed without a secret callback or validate callback': {
     'should throw an error': function (strategy) {
       assert.throws(function() { new BasicStrategy() });
