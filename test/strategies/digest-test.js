@@ -60,6 +60,47 @@ vows.describe('DigestStrategy').addBatch({
     },
   },
   
+  'strategy handling a valid request with qop set to "auth"': {
+    topic: function() {
+      var strategy = new DigestStrategy(
+        function(username, done) {
+          done(null, 'secret');
+        },
+        function(username, options, done) {
+          done(null, { username: username });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(null, user);
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'Digest username="bob", realm="Users", nonce="T1vogipt8GzzWyCZt7U3TNV5XsarMW8y", uri="/", cnonce="MTMxOTkx", nc=00000001, qop="auth", response="7495a912e5c52e1e9ac92793c6f5c229"';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not generate an error' : function(err, user) {
+        assert.isNull(err);
+      },
+      'should authenticate' : function(err, user) {
+        assert.equal(user.username, 'bob');
+      },
+    },
+  },
+  
   'strategy handling a request without authorization credentials': {
     topic: function() {
       var strategy = new DigestStrategy(
