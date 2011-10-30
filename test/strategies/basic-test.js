@@ -206,8 +206,8 @@ vows.describe('BasicStrategy').addBatch({
         strategy.success = function(user) {
           self.callback(new Error('should not be called'));
         }
-        strategy.fail = function(challenge) {
-          self.callback(null, challenge);
+        strategy.fail = function(status) {
+          self.callback(null, status);
         }
         
         req.headers = {};
@@ -220,7 +220,7 @@ vows.describe('BasicStrategy').addBatch({
       'should fail authentication with challenge' : function(err, challenge) {
         // fail action was called, resulting in test callback
         assert.isNull(err);
-        assert.equal(challenge, 'Basic realm="Users"');
+        assert.equal(challenge, 400);
       },
     },
   },
@@ -240,8 +240,8 @@ vows.describe('BasicStrategy').addBatch({
         strategy.success = function(user) {
           self.callback(new Error('should not be called'));
         }
-        strategy.fail = function(challenge) {
-          self.callback(null, challenge);
+        strategy.fail = function(status) {
+          self.callback(null, status);
         }
         
         req.headers = {};
@@ -254,7 +254,7 @@ vows.describe('BasicStrategy').addBatch({
       'should fail authentication with challenge' : function(err, challenge) {
         // fail action was called, resulting in test callback
         assert.isNull(err);
-        assert.equal(challenge, 'Basic realm="Users"');
+        assert.equal(challenge, 400);
       },
     },
   },
