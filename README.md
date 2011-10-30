@@ -6,7 +6,7 @@ HTTP Basic and Digest authentication strategies for [Passport](https://github.co
 
     $ npm install passport-http
 
-## Usage
+## Usage of HTTP Basic
 
 #### Configure Strategy
 
@@ -34,7 +34,7 @@ require session support, so the `session` option can be set to `false`.
 For example, as route middleware in an [Express](http://expressjs.com/)
 application:
 
-    app.post('/login', 
+    app.get('/private', 
       passport.authenticate('basic', { session: false }),
       function(req, res) {
         res.json(req.user);
@@ -43,6 +43,56 @@ application:
 #### Examples
 
 For a complete, working example, refer to the [Basic example](https://github.com/jaredhanson/passport-http/tree/master/examples/basic).
+
+## Usage of HTTP Digest
+
+#### Configure Strategy
+
+The HTTP Digest authentication strategy authenticates users using a username and
+password (aka shared secret).  The strategy requires a `secret` callback, which
+accepts a `username` and calls `done` providing a password known to the server.
+
+The strategy also requires a `validate` callback, which accepts a `username` and
+nonce-related `options` and calls `done` providing a user.  It should be noted
+that when `validate` is called, the request will already have been successfully
+authenticated based on username and password credentials.  The nonce-related
+`options` can be further inspected to determine if the request is valid.
+
+    passport.use(new DigestStrategy({ qop: 'auth' },
+      function(username, done) {
+        User.findOne({ username: username }, function (err, user) {
+          if (err) { return done(err); }
+          if (!user) { return done(null, false); }
+          return done(null, user.password);
+        });
+      },
+      function(username, options, done) {
+        User.findOne({ username: username }, function (err, user) {
+          if (err) { return done(err); }
+          if (!user) { return done(null, false); }
+          return done(null, user);
+        });
+      }
+    ));
+
+#### Authenticate Requests
+
+Use `passport.authenticate()`, specifying the `'digest'` strategy, to
+authenticate requests.  Requests containing an 'Authorization' header do not
+require session support, so the `session` option can be set to `false`.
+
+For example, as route middleware in an [Express](http://expressjs.com/)
+application:
+
+    app.get('/private', 
+      passport.authenticate('digest', { session: false }),
+      function(req, res) {
+        res.json(req.user);
+      });
+
+#### Examples
+
+For a complete, working example, refer to the [Digest example](https://github.com/jaredhanson/passport-http/tree/master/examples/digest).
 
 ## Credits
 

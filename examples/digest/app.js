@@ -36,7 +36,7 @@ passport.use(new DigestStrategy({ qop: 'auth' },
       return done(null, user.password);
     })
   },
-  function(username, password, done) {
+  function(username, options, done) {
     // asynchronous validation, for effect...
     process.nextTick(function () {
       
