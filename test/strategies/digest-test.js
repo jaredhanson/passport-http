@@ -550,8 +550,8 @@ vows.describe('DigestStrategy').addBatch({
         strategy.success = function(user) {
           self.callback(new Error('should not be called'));
         }
-        strategy.fail = function(challenge) {
-          self.callback(null, challenge);
+        strategy.fail = function(status) {
+          self.callback(null, status);
         }
         
         req.url = '/';
@@ -563,10 +563,10 @@ vows.describe('DigestStrategy').addBatch({
         });
       },
       
-      'should fail authentication with challenge' : function(err, challenge) {
+      'should fail authentication with 400 Bad Request' : function(err, status) {
         // fail action was called, resulting in test callback
         assert.isNull(err);
-        assert.match(challenge, /^Digest realm="Users", nonce="\w{32}"$/);
+        assert.equal(status, 400);
       },
     },
   },
@@ -591,11 +591,8 @@ vows.describe('DigestStrategy').addBatch({
         strategy.success = function(user) {
           self.callback(new Error('should not be called'));
         }
-        strategy.fail = function(challenge) {
-          self.callback(new Error('should not be called'));
-        }
-        strategy.error = function(err) {
-          self.callback(null, err);
+        strategy.fail = function(status) {
+          self.callback(null, status);
         }
         
         req.url = '/';
@@ -607,11 +604,10 @@ vows.describe('DigestStrategy').addBatch({
         });
       },
       
-      'should not call success or fail' : function(err, e) {
+      'should fail authentication with 400 Bad Request' : function(err, status) {
+        // fail action was called, resulting in test callback
         assert.isNull(err);
-      },
-      'should call error' : function(err, e) {
-        assert.instanceOf(e, Error);
+        assert.equal(status, 400);
       },
     },
   },
@@ -636,11 +632,8 @@ vows.describe('DigestStrategy').addBatch({
         strategy.success = function(user) {
           self.callback(new Error('should not be called'));
         }
-        strategy.fail = function() {
-          self.callback(new Error('should not be called'));
-        }
-        strategy.error = function(err) {
-          self.callback(null, err);
+        strategy.fail = function(status) {
+          self.callback(null, status);
         }
         
         req.url = '/admin';
@@ -652,11 +645,10 @@ vows.describe('DigestStrategy').addBatch({
         });
       },
       
-      'should not call success or fail' : function(err, e) {
+      'should fail authentication with 400 Bad Request' : function(err, status) {
+        // fail action was called, resulting in test callback
         assert.isNull(err);
-      },
-      'should call error' : function(err, e) {
-        assert.instanceOf(e, Error);
+        assert.equal(status, 400);
       },
     },
   },
@@ -681,11 +673,8 @@ vows.describe('DigestStrategy').addBatch({
         strategy.success = function(user) {
           self.callback(new Error('should not be called'));
         }
-        strategy.fail = function() {
-          self.callback(new Error('should not be called'));
-        }
-        strategy.error = function(err) {
-          self.callback(null, err);
+        strategy.fail = function(status) {
+          self.callback(null, status);
         }
         
         req.url = '/';
@@ -697,11 +686,10 @@ vows.describe('DigestStrategy').addBatch({
         });
       },
       
-      'should not call success or fail' : function(err, e) {
+      'should fail authentication with 400 Bad Request' : function(err, status) {
+        // fail action was called, resulting in test callback
         assert.isNull(err);
-      },
-      'should call error' : function(err, e) {
-        assert.instanceOf(e, Error);
+        assert.equal(status, 400);
       },
     },
   },
@@ -726,11 +714,8 @@ vows.describe('DigestStrategy').addBatch({
         strategy.success = function(user) {
           self.callback(new Error('should not be called'));
         }
-        strategy.fail = function() {
-          self.callback(new Error('should not be called'));
-        }
-        strategy.error = function(err) {
-          self.callback(null, err);
+        strategy.fail = function(status) {
+          self.callback(null, status);
         }
         
         req.url = '/';
@@ -742,11 +727,10 @@ vows.describe('DigestStrategy').addBatch({
         });
       },
       
-      'should not call success or fail' : function(err, e) {
+      'should fail authentication with 400 Bad Request' : function(err, status) {
+        // fail action was called, resulting in test callback
         assert.isNull(err);
-      },
-      'should call error' : function(err, e) {
-        assert.instanceOf(e, Error);
+        assert.equal(status, 400);
       },
     },
   },
