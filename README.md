@@ -94,6 +94,13 @@ application:
 
 For a complete, working example, refer to the [Digest example](https://github.com/jaredhanson/passport-http/tree/master/examples/digest).
 
+## Tests
+
+    $ npm install --dev
+    $ make test
+
+[![Build Status](https://secure.travis-ci.org/jaredhanson/passport-http.png)](http://travis-ci.org/jaredhanson/passport-http)
+
 ## Credits
 
   - [Jared Hanson](http://github.com/jaredhanson)
