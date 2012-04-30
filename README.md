@@ -2,6 +2,12 @@
 
 HTTP Basic and Digest authentication strategies for [Passport](https://github.com/jaredhanson/passport).
 
+This module lets you authenticate HTTP requests using the standard basic and
+digest schemes in your Node.js applications.  By plugging into Passport, support
+for these schemes can be easily and unobtrusively integrated into any
+application or framework that supports [Connect](http://www.senchalabs.org/connect/)-style
+middleware, including [Express](http://expressjs.com/).
+
 ## Installation
 
     $ npm install passport-http
