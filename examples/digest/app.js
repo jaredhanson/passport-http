@@ -22,32 +22,27 @@ function findByUsername(username, fn) {
 
 // Use the DigestStrategy within Passport.
 //   This strategy requires a `secret`function, which is used to look up the
-//   password known to both the client and server.  Also required is a
-//   `validate` function, which accepts credentials (in this case, a username
-//   and nonce-related options), and invokes a callback with a user object.
+//   use and the user's password known to both the client and server.  The
+//   password is used to compute a hash, and authentication will fail if the
+//   computed value does not match that of the request.  Also required is a
+//   `validate` function, which can be used to validate nonces and other
+//   authentication parameters contained in the request.
 passport.use(new DigestStrategy({ qop: 'auth' },
   function(username, done) {
     // Find the user by username.  If there is no user with the given username
     // set the user to `false` to indicate failure.  Otherwise, return the
-    // user's password.
+    // user and user's password.
     findByUsername(username, function(err, user) {
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
-      return done(null, user.password);
+      return done(null, user, user.password);
     })
   },
-  function(username, options, done) {
+  function(params, done) {
     // asynchronous validation, for effect...
     process.nextTick(function () {
-      
-      // Find the user by username.  If there is no user with the given
-      // username, set the user to `false` to indicate failure.  Otherwise,
-      // return the authenticated `user`.
-      findByUsername(username, function(err, user) {
-        if (err) { return done(err); }
-        if (!user) { return done(null, false); }
-        return done(null, user);
-      })
+      // check nonces in params here, if desired
+      return done(null, true);
     });
   }
 ));
