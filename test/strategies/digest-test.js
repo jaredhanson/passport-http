@@ -148,6 +148,51 @@ vows.describe('DigestStrategy').addBatch({
     },
   },
   
+  'strategy handling a valid request with qop set to "auth" and equal sign in URL': {
+    topic: function() {
+      var strategy = new DigestStrategy({ qop: 'auth' },
+        function(username, done) {
+          done(null, 'secret');
+        },
+        function(username, options, done) {
+          done(null, { username: username, nonce: options.nonce, cnonce: options.cnonce, nc: options.nc });
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(null, user);
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        
+        req.url = '/sessions.json?sEcho=2&iColumns=12';
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'Digest username="bob", realm="Users", nonce="3sauEztFK9HB2vjADmXE4sQbtwpGCFZ2", uri="/sessions.json?sEcho=2&iColumns=12", cnonce="MTM0MTkw", nc=00000001, qop="auth", response="83e2cb1afbb943a0cde78290c5002607"';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not generate an error' : function(err, user) {
+        assert.isNull(err);
+      },
+      'should authenticate' : function(err, user) {
+        assert.equal(user.username, 'bob');
+        assert.equal(user.nonce, '3sauEztFK9HB2vjADmXE4sQbtwpGCFZ2');
+        assert.equal(user.cnonce, 'MTM0MTkw');
+        assert.equal(user.nc, 1);
+      },
+    },
+  },
+  
   'strategy handling a valid request with qop set to "auth" and algorithm set to "MD5-sess"': {
     topic: function() {
       var strategy = new DigestStrategy({ qop: 'auth', algorithm: 'MD5-sess' },

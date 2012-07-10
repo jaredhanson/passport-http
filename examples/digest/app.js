@@ -79,4 +79,12 @@ app.all('/',
     res.json({ username: req.user.username, email: req.user.email });
   });
 
+// curl -v -I --user bob:secret --digest "http://127.0.0.1:3000/sessions.json?sEcho=2&iColumns=12"
+app.all('/sessions.json',
+  // Authenticate using HTTP Digest credentials, with session support disabled.
+  passport.authenticate('digest', { session: false }),
+  function(req, res){
+    res.json({ username: req.user.username, email: req.user.email });
+  });
+
 app.listen(3000);
