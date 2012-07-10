@@ -37,6 +37,16 @@ passport.use(new BasicStrategy(function(username, password, done) {
   })
 }));
 
+passport.use(new DigestStrategy({ qop: 'auth' }, function(username, done) {
+  // Find the user by username.  If there is no user with the given username
+  // set the user to `false` to indicate failure.  Otherwise, return the
+  // user and user's password.
+  findByUsername(username, function(err, user) {
+    if (err) { return done(err); }
+    if (!user) { return done(null, false); }
+    return done(null, user, user.password);
+  })
+}));
 
 
 var app = express.createServer();
@@ -58,7 +68,7 @@ app.configure(function() {
 // curl -v -I --user bob:secret --anyauth http://127.0.0.1:3000/
 app.get('/',
   // Authenticate using HTTP Basic credentials, with session support disabled.
-  passport.authenticate('basic', { session: false }),
+  passport.authenticate('digest', { session: false }),
   function(req, res){
    res.json({ username: req.user.username, email: req.user.email });
   });
