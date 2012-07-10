@@ -152,7 +152,11 @@ vows.describe('DigestStrategy').addBatch({
           done(null, { username: username }, 'secret');
         },
         function(username, options, done) {
-          done(null, { nonce: options.nonce, cnonce: options.cnonce, nc: options.nc });
+          if (options.nonce === 'T1vogipt8GzzWyCZt7U3TNV5XsarMW8y' && options.cnonce === 'MTMxOTkx' && options.nc === '00000001') {
+            done(null, { nonce: options.nonce, cnonce: options.cnonce, nc: options.nc });
+          } else {
+            done(new Error('something is wrong'))
+          }
         }
       );
       return strategy;
@@ -166,6 +170,9 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, user);
         }
         strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.error = function() {
           self.callback(new Error('should not be called'));
         }
         
@@ -183,10 +190,6 @@ vows.describe('DigestStrategy').addBatch({
       },
       'should authenticate' : function(err, user) {
         assert.equal(user.username, 'bob');
-        // FIXME:
-        //assert.equal(user.nonce, 'T1vogipt8GzzWyCZt7U3TNV5XsarMW8y');
-        //assert.equal(user.cnonce, 'MTMxOTkx');
-        //assert.equal(user.nc, 1);
       },
     },
   },
@@ -198,7 +201,11 @@ vows.describe('DigestStrategy').addBatch({
           done(null, { username: username }, 'secret');
         },
         function(username, options, done) {
-          done(null, { nonce: options.nonce, cnonce: options.cnonce, nc: options.nc });
+          if (options.nonce === '3sauEztFK9HB2vjADmXE4sQbtwpGCFZ2' && options.cnonce === 'MTM0MTkw' && options.nc === '00000001') {
+            done(null, { nonce: options.nonce, cnonce: options.cnonce, nc: options.nc });
+          } else {
+            done(new Error('something is wrong'))
+          }
         }
       );
       return strategy;
@@ -212,6 +219,9 @@ vows.describe('DigestStrategy').addBatch({
           self.callback(null, user);
         }
         strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.error = function() {
           self.callback(new Error('should not be called'));
         }
         
@@ -229,10 +239,6 @@ vows.describe('DigestStrategy').addBatch({
       },
       'should authenticate' : function(err, user) {
         assert.equal(user.username, 'bob');
-        // FIXME:
-        //assert.equal(user.nonce, '3sauEztFK9HB2vjADmXE4sQbtwpGCFZ2');
-        //assert.equal(user.cnonce, 'MTM0MTkw');
-        //assert.equal(user.nc, 1);
       },
     },
   },
