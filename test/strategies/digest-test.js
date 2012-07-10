@@ -25,7 +25,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -67,7 +67,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, { ha1: '9e3bcfb22c441e9648cae34400c648d0' });
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -109,7 +109,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -151,9 +151,9 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           if (options.nonce === 'T1vogipt8GzzWyCZt7U3TNV5XsarMW8y' && options.cnonce === 'MTMxOTkx' && options.nc === '00000001') {
-            done(null, { nonce: options.nonce, cnonce: options.cnonce, nc: options.nc });
+            done(null, true);
           } else {
             done(new Error('something is wrong'))
           }
@@ -200,7 +200,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           if (options.nonce === '3sauEztFK9HB2vjADmXE4sQbtwpGCFZ2' && options.cnonce === 'MTM0MTkw' && options.nc === '00000001') {
             done(null, { nonce: options.nonce, cnonce: options.cnonce, nc: options.nc });
           } else {
@@ -249,7 +249,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -291,7 +291,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -338,7 +338,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'idontknow');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -379,7 +379,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, false);
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -420,7 +420,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, false);
         }
       );
@@ -461,7 +461,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(new Error('something went wrong'));
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -506,7 +506,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(new Error('something went wrong'));
         }
       );
@@ -551,7 +551,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -590,7 +590,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -631,7 +631,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -672,7 +672,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -713,7 +713,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -754,7 +754,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -795,7 +795,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -836,7 +836,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -878,7 +878,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, false);
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -918,7 +918,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -957,7 +957,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -996,7 +996,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -1035,7 +1035,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -1074,7 +1074,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
@@ -1113,7 +1113,7 @@ vows.describe('DigestStrategy').addBatch({
         function(username, done) {
           done(null, { username: username }, 'secret');
         },
-        function(username, options, done) {
+        function(options, done) {
           done(null, true);
         }
       );
