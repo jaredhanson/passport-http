@@ -56,28 +56,25 @@ For a complete, working example, refer to the [Basic example](https://github.com
 
 The HTTP Digest authentication strategy authenticates users using a username and
 password (aka shared secret).  The strategy requires a `secret` callback, which
-accepts a `username` and calls `done` providing a password known to the server.
+accepts a `username` and calls `done` providing a user and password known to the
+server.  The password is used to compute a hash, and authentication fails if it
+does not match that contained in the request.
 
-The strategy also requires a `validate` callback, which accepts a `username` and
-nonce-related `options` and calls `done` providing a user.  It should be noted
-that when `validate` is called, the request will already have been successfully
-authenticated based on username and password credentials.  The nonce-related
-`options` can be further inspected to determine if the request is valid.
+The strategy also accepts an optional `validate` callback, which receives
+nonce-related `params` that can be further inspected to determine if the request
+is valid.
 
     passport.use(new DigestStrategy({ qop: 'auth' },
       function(username, done) {
         User.findOne({ username: username }, function (err, user) {
           if (err) { return done(err); }
           if (!user) { return done(null, false); }
-          return done(null, user.password);
+          return done(null, user, user.password);
         });
       },
-      function(username, options, done) {
-        User.findOne({ username: username }, function (err, user) {
-          if (err) { return done(err); }
-          if (!user) { return done(null, false); }
-          return done(null, user);
-        });
+      function(params, done) {
+        // validate nonces as necessary
+        done(null, true)
       }
     ));
 
