@@ -67,8 +67,8 @@ app.configure(function() {
 // curl -v -I --user bob:secret --digest http://127.0.0.1:3000/
 // curl -v -I --user bob:secret --anyauth http://127.0.0.1:3000/
 app.get('/',
-  // Authenticate using HTTP Basic credentials, with session support disabled.
-  passport.authenticate('digest', { session: false }),
+  // Authenticate using either HTTP Basic or Digest credentials, with session support disabled.
+  passport.authenticate(['basic', 'digest'], { session: false }),
   function(req, res){
    res.json({ username: req.user.username, email: req.user.email });
   });
