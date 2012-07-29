@@ -1,6 +1,6 @@
 {
   "name": "passport-http",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "HTTP Basic and Digest authentication strategies for Passport.",
   "author": { "name": "Jared Hanson", "email": "jaredhanson@gmail.com", "url": "http://www.jaredhanson.net/" },
   "repository": {
