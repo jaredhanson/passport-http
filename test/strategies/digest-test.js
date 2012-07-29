@@ -61,6 +61,48 @@ vows.describe('DigestStrategy').addBatch({
     },
   },
   
+  'strategy handling a valid request with credentials not separated by spaces': {
+    topic: function() {
+      var strategy = new DigestStrategy(
+        function(username, done) {
+          done(null, { username: username }, 'secret');
+        },
+        function(options, done) {
+          done(null, true);
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(null, user);
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        
+        req.url = '/';
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'Digest username="bob",realm="Users",nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS",uri="/",response="22e3e0a9bbefeb9d229905230cb9ddc8"';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not generate an error' : function(err, user) {
+        assert.isNull(err);
+      },
+      'should authenticate' : function(err, user) {
+        assert.equal(user.username, 'bob');
+      },
+    },
+  },
+  
   'strategy handling a valid request and supplying hashed HA1 to secret callback': {
     topic: function() {
       var strategy = new DigestStrategy(
@@ -268,6 +310,55 @@ vows.describe('DigestStrategy').addBatch({
         req.method = 'HEAD';
         req.headers = {};
         req.headers.authorization = 'Digest username="bob", realm="Users", nonce="3sauEztFK9HB2vjADmXE4sQbtwpGCFZ2", uri="/sessions.json?sEcho=2&iColumns=12", cnonce="MTM0MTkw", nc=00000001, qop="auth", response="83e2cb1afbb943a0cde78290c5002607"';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not generate an error' : function(err, user) {
+        assert.isNull(err);
+      },
+      'should authenticate' : function(err, user) {
+        assert.equal(user.username, 'bob');
+      },
+    },
+  },
+  
+  'strategy handling a valid request with credentials not separated by spaces with qop set to "auth" and equal sign in URL': {
+    topic: function() {
+      var strategy = new DigestStrategy({ qop: 'auth' },
+        function(username, done) {
+          done(null, { username: username }, 'secret');
+        },
+        function(options, done) {
+          if (options.nonce === '3sauEztFK9HB2vjADmXE4sQbtwpGCFZ2' && options.cnonce === 'MTM0MTkw' && options.nc === '00000001') {
+            done(null, { nonce: options.nonce, cnonce: options.cnonce, nc: options.nc });
+          } else {
+            done(new Error('something is wrong'))
+          }
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(null, user);
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.error = function() {
+          self.callback(new Error('should not be called'));
+        }
+        
+        req.url = '/sessions.json?sEcho=2&iColumns=12';
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'Digest username="bob",realm="Users",nonce="3sauEztFK9HB2vjADmXE4sQbtwpGCFZ2",uri="/sessions.json?sEcho=2&iColumns=12",cnonce="MTM0MTkw",nc=00000001,qop="auth",response="83e2cb1afbb943a0cde78290c5002607"';
         process.nextTick(function () {
           strategy.authenticate(req);
         });
