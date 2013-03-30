@@ -334,5 +334,42 @@ vows.describe('BasicStrategy').addBatch({
       assert.throws(function() { new BasicStrategy() });
     },
   },
-  
+
+  'strategy with passReqToCallback=true option': {
+    topic: function() {
+      var strategy = new BasicStrategy({passReqToCallback:true}, function(req, userid, password, done) {
+        assert.isNotNull(req);
+        done(null, { username: userid, password: password });
+      });
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(null, user);
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        
+        req.headers = {};
+        req.headers.authorization = 'Basic Ym9iOnNlY3JldA==';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not generate an error' : function(err, user) {
+        assert.isNull(err);
+      },
+      'should authenticate' : function(err, user) {
+        assert.equal(user.username, 'bob');
+        assert.equal(user.password, 'secret');
+      },
+    },
+  },
+
 }).export(module);
