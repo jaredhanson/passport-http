@@ -60,6 +60,49 @@ vows.describe('DigestStrategy').addBatch({
       },
     },
   },
+
+
+  'strategy handling a valid request with an empty username': {
+    topic: function() {
+      var strategy = new DigestStrategy(
+        function(username, done) {
+          done(null, { username: username }, 'secret');
+        },
+        function(options, done) {
+          done(null, true);
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(null, user);
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        
+        req.url = '/';
+        req.method = 'HEAD';
+        req.headers = {};
+        req.headers.authorization = 'Digest username="", realm="Users", nonce="NOIEDJ3hJtqSKaty8KF8xlkaYbItAkiS", uri="/", response="459ea26315b4ac2ad14537695acd5a9b"';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not generate an error' : function(err, user) {
+        assert.isNull(err);
+      },
+      'should authenticate' : function(err, user) {
+        assert.equal(user.username, undefined);
+      },
+    },
+  },
   
   'strategy handling a valid request with credentials not separated by spaces': {
     topic: function() {
