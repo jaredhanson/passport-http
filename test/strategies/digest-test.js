@@ -98,7 +98,7 @@ vows.describe('DigestStrategy').addBatch({
       'should not generate an error' : function(err, user) {
         assert.isNull(err);
       },
-      'should authenticate' : function(err, challenge) {
+      'should fail authentication with challenge' : function(err, challenge) {
         assert.match(challenge, /^Digest realm="Users", nonce="\w{32}"$/);
       },
     },
