@@ -80,10 +80,10 @@ vows.describe('DigestStrategy').addBatch({
         var self = this;
         var req = {};
         strategy.success = function(user) {
-          self.callback(null, user);
-        }
-        strategy.fail = function() {
           self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
         }
         
         req.url = '/';
@@ -98,8 +98,8 @@ vows.describe('DigestStrategy').addBatch({
       'should not generate an error' : function(err, user) {
         assert.isNull(err);
       },
-      'should authenticate' : function(err, user) {
-        assert.equal(user.username, undefined);
+      'should authenticate' : function(err, challenge) {
+        assert.match(challenge, /^Digest realm="Users", nonce="\w{32}"$/);
       },
     },
   },
