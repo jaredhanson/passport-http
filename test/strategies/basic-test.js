@@ -191,6 +191,74 @@ vows.describe('BasicStrategy').addBatch({
     },
   },
   
+  'strategy handling a request with credentials lacking a password': {
+    topic: function() {
+      var strategy = new BasicStrategy(function(userid, password, done) {
+        done(null, { username: userid, password: password });
+      });
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+        
+        req.headers = {};
+        req.headers.authorization = 'Basic Ym9iOg==';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.equal(challenge, 'Basic realm="Users"');
+      },
+    },
+  },
+  
+  'strategy handling a request with credentials lacking a username': {
+    topic: function() {
+      var strategy = new BasicStrategy(function(userid, password, done) {
+        done(null, { username: userid, password: password });
+      });
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+        
+        req.headers = {};
+        req.headers.authorization = 'Basic OnNlY3JldA==';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.equal(challenge, 'Basic realm="Users"');
+      },
+    },
+  },
+  
   'strategy handling a request with malformed authorization header': {
     topic: function() {
       var strategy = new BasicStrategy(function(userid, password, done) {
