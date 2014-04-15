@@ -440,4 +440,40 @@ vows.describe('BasicStrategy').addBatch({
     },
   },
 
+  'strategy handling a request with empty password with acceptEmptyPassword=true option': {
+    topic: function() {
+      var strategy = new BasicStrategy({acceptEmptyPassword:true}, function(userid, password, done) {
+        done(null, { username: userid, password: password });
+      });
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(null, user);
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        
+        req.headers = {};
+        req.headers.authorization = 'Basic Ym9iOg==';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should not generate an error' : function(err, user) {
+        assert.isNull(err);
+      },
+      'should authenticate' : function(err, user) {
+        assert.equal(user.username, 'bob');
+        assert.equal(user.password, '');
+      },
+    },
+  },
+
 }).export(module);
