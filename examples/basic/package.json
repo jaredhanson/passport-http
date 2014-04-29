@@ -2,8 +2,9 @@
   "name": "passport-http-examples-basic",
   "version": "0.0.0",
   "dependencies": {
-    "express": ">= 0.0.0",
+    "express": ">= 4.0.0",
     "passport": ">= 0.0.0",
-    "passport-http": ">= 0.0.0"
+    "passport-http": ">= 0.0.0",
+    "morgan": "~1.0.0"
   }
 }
