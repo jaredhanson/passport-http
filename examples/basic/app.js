@@ -1,7 +1,22 @@
 var express = require('express')
   , passport = require('passport')
   , util = require('util')
-  , BasicStrategy = require('passport-http').BasicStrategy;
+  , BasicStrategy = require('passport-http').BasicStrategy
+  , morgan  = require('morgan')
+  , app     = express();
+
+
+app.use(morgan());
+app.use(passport.initialize());
+
+// curl -v -I http://127.0.0.1:3000/
+// curl -v -I --user bob:secret http://127.0.0.1:3000/
+app.get('/',
+    // Authenticate using HTTP Basic credentials, with session support disabled.
+    passport.authenticate('basic', { session: false }),
+    function(req, res){
+        res.json({ username: req.user.username, email: req.user.email });
+    });
 
 
 var users = [
@@ -18,7 +33,6 @@ function findByUsername(username, fn) {
   }
   return fn(null, null);
 }
-
 
 // Use the BasicStrategy within Passport.
 //   Strategies in Passport require a `verify` function, which accept
@@ -42,30 +56,5 @@ passport.use(new BasicStrategy({
     });
   }
 ));
-
-
-
-
-var app = express.createServer();
-
-// configure Express
-app.configure(function() {
-  app.use(express.logger());
-  // Initialize Passport!  Note: no need to use session middleware when each
-  // request carries authentication credentials, as is the case with HTTP Basic.
-  app.use(passport.initialize());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
-
-
-// curl -v -I http://127.0.0.1:3000/
-// curl -v -I --user bob:secret http://127.0.0.1:3000/
-app.get('/',
-  // Authenticate using HTTP Basic credentials, with session support disabled.
-  passport.authenticate('basic', { session: false }),
-  function(req, res){
-   res.json({ username: req.user.username, email: req.user.email });
-  });
 
 app.listen(3000);
