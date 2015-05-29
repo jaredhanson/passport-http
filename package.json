@@ -15,10 +15,7 @@
     "email": "jaredhanson@gmail.com",
     "url": "http://www.jaredhanson.net/"
   },
-  "licenses": [ {
-    "type": "MIT",
-    "url": "http://www.opensource.org/licenses/MIT" 
-  } ],
+  "license": "MIT",
   "main": "./lib/passport-http",
   "dependencies": {
     "pkginfo": "0.2.x",
