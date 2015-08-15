@@ -7,9 +7,13 @@ var http = require('passport-http');
 vows.describe('passport-http').addBatch({
   
   'module': {
-    'should report a version': function (x) {
-      assert.isString(http.version);
+    'should export BasicStrategy': function (x) {
+      assert.isFunction(http.BasicStrategy);
     },
+
+    'should export DigestStrategy': function (x) {
+      assert.isFunction(http.DigestStrategy);
+    }
   },
   
 }).export(module);

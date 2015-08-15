@@ -17,12 +17,11 @@
   },
   "licenses": [ {
     "type": "MIT",
-    "url": "http://www.opensource.org/licenses/MIT" 
+    "url": "http://www.opensource.org/licenses/MIT"
   } ],
   "main": "./lib/passport-http",
   "dependencies": {
-    "pkginfo": "0.2.x",
-    "passport": "~0.1.3"
+    "passport-strategy": "1.x.x"
   },
   "devDependencies": {
     "vows": "0.8.x"
