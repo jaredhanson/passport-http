@@ -1,6 +1,6 @@
 {
   "name": "passport-http",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "HTTP Basic and Digest authentication strategies for Passport.",
   "keywords": ["passport", "http", "basic", "digest", "auth", "authn", "authentication"],
   "repository": {
@@ -17,15 +17,14 @@
   },
   "licenses": [ {
     "type": "MIT",
-    "url": "http://www.opensource.org/licenses/MIT" 
+    "url": "http://www.opensource.org/licenses/MIT"
   } ],
   "main": "./lib/passport-http",
   "dependencies": {
-    "pkginfo": "0.2.x",
-    "passport": "~0.1.3"
+    "passport-strategy": "1.x.x"
   },
   "devDependencies": {
-    "vows": "0.6.x"
+    "vows": "0.8.x"
   },
   "scripts": {
     "test": "NODE_PATH=lib node_modules/.bin/vows test/*-test.js test/**/*-test.js"

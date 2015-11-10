@@ -48,7 +48,7 @@ application:
 
 #### Examples
 
-For a complete, working example, refer to the [Basic example](https://github.com/jaredhanson/passport-http/tree/master/examples/basic).
+For a complete, working example, refer to the [Basic example](https://github.com/passport/express-3.x-http-basic-example).
 
 ## Usage of HTTP Digest
 
@@ -95,7 +95,7 @@ application:
 
 #### Examples
 
-For a complete, working example, refer to the [Digest example](https://github.com/jaredhanson/passport-http/tree/master/examples/digest).
+For a complete, working example, refer to the [Digest example](https://github.com/passport/express-3.x-http-digest-example).
 
 ## Tests
 
