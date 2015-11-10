@@ -35,7 +35,7 @@ credentials and calls `done` providing a user.
 Browsers such as Safari intercept `401 Unauthorized` responses with the `Basic` challenge. In client side apps using XHR requests this creates a browser authorization dialog.  To work around this you can pass the `xhrChallengeType` option. This will set a different challenge type and avoid the popup dialog on XHR requests, letting you handle the error in your own code. For example:
 
     passport.use(new BasicStrategy(
-      { xhrCallengeType: 'xBasic' },
+      { xhrChallengeType: 'xBasic' },
       function(userid, password, done) {
         User.findOne({ username: userid }, function (err, user) {
           if (err) { return done(err); }
