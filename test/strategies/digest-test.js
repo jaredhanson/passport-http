@@ -1163,6 +1163,85 @@ vows.describe('DigestStrategy').addBatch({
     },
   },
   
+  'strategy handling a request without authorization credentials with nonce option set': {
+    topic: function() {
+      var strategy = new DigestStrategy({ nonce: '8yDNoEqNDPEFHPgmMPDsk2sKqzddhIiC' },
+        function(username, done) {
+          done(null, { username: username }, 'secret');
+        },
+        function(options, done) {
+          done(null, true);
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+        
+        req.url = '/';
+        req.headers = {};
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.match(challenge, /^Digest realm="Users", nonce="8yDNoEqNDPEFHPgmMPDsk2sKqzddhIiC"$/);
+      },
+    },
+  },
+
+  'strategy handling a request without authorization credentials with nonce function option set': {
+    topic: function() {
+      var strategy = new DigestStrategy({ nonce: function(req) { return req.ip; } },
+        function(username, done) {
+          done(null, { username: username }, 'secret');
+        },
+        function(options, done) {
+          done(null, true);
+        }
+      );
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+
+        req.ip = '192.168.1.66';
+        req.url = '/';
+        req.headers = {};
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.match(challenge, /^Digest realm="Users", nonce="192.168.1.66"$/);
+      },
+    },
+  },
+
   'strategy handling a request without authorization credentials with opaque option set': {
     topic: function() {
       var strategy = new DigestStrategy({ opaque: 'abcdefg1234' },
@@ -1358,87 +1437,6 @@ vows.describe('DigestStrategy').addBatch({
       },
     },
   },
-
-  /////////////////////////////////////////////////////////////////////////////////////////////
-  'strategy handling a request without authorization credentials with nonce option set': {
-    topic: function() {
-      var strategy = new DigestStrategy({ nonce: '8yDNoEqNDPEFHPgmMPDsk2sKqzddhIiC' },
-        function(username, done) {
-          done(null, { username: username }, 'secret');
-        },
-        function(options, done) {
-          done(null, true);
-        }
-      );
-      return strategy;
-    },
-    
-    'after augmenting with actions': {
-      topic: function(strategy) {
-        var self = this;
-        var req = {};
-        strategy.success = function(user) {
-          self.callback(new Error('should not be called'));
-        }
-        strategy.fail = function(challenge) {
-          self.callback(null, challenge);
-        }
-        
-        req.url = '/';
-        req.headers = {};
-        process.nextTick(function () {
-          strategy.authenticate(req);
-        });
-      },
-      
-      'should fail authentication with challenge' : function(err, challenge) {
-        // fail action was called, resulting in test callback
-        assert.isNull(err);
-        assert.match(challenge, /^Digest realm="Users", nonce="8yDNoEqNDPEFHPgmMPDsk2sKqzddhIiC"$/);
-      },
-    },
-  },
-
-  'strategy handling a request without authorization credentials with nonce function option set': {
-    topic: function() {
-      var strategy = new DigestStrategy({ nonce: function(req) { return req.ip; } },
-        function(username, done) {
-          done(null, { username: username }, 'secret');
-        },
-        function(options, done) {
-          done(null, true);
-        }
-      );
-      return strategy;
-    },
-    
-    'after augmenting with actions': {
-      topic: function(strategy) {
-        var self = this;
-        var req = {};
-        strategy.success = function(user) {
-          self.callback(new Error('should not be called'));
-        }
-        strategy.fail = function(challenge) {
-          self.callback(null, challenge);
-        }
-
-        req.ip = '192.168.1.66';
-        req.url = '/';
-        req.headers = {};
-        process.nextTick(function () {
-          strategy.authenticate(req);
-        });
-      },
-      
-      'should fail authentication with challenge' : function(err, challenge) {
-        // fail action was called, resulting in test callback
-        assert.isNull(err);
-        assert.match(challenge, /^Digest realm="Users", nonce="192.168.1.66"$/);
-      },
-    },
-  },
-  ///////////////////////////////////////////////////////////////////////////////////////////////
 
   'strategy constructed without a secret callback or validate callback': {
     'should throw an error': function (strategy) {
