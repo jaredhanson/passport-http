@@ -10,7 +10,9 @@ middleware, including [Express](http://expressjs.com/).
 
 ## Install
 
-    $ npm install passport-http
+```sh
+$ npm install passport-http
+```
 
 ## Usage of HTTP Basic
 
@@ -20,16 +22,18 @@ The HTTP Basic authentication strategy authenticates users using a userid and
 password.  The strategy requires a `verify` callback, which accepts these
 credentials and calls `done` providing a user.
 
-    passport.use(new BasicStrategy(
-      function(userid, password, done) {
-        User.findOne({ username: userid }, function (err, user) {
-          if (err) { return done(err); }
-          if (!user) { return done(null, false); }
-          if (!user.verifyPassword(password)) { return done(null, false); }
-          return done(null, user);
-        });
-      }
-    ));
+```javascript
+passport.use(new BasicStrategy(
+  function(userid, password, done) {
+    User.findOne({ username: userid }, function (err, user) {
+      if (err) { return done(err); }
+      if (!user) { return done(null, false); }
+      if (!user.verifyPassword(password)) { return done(null, false); }
+      return done(null, user);
+    });
+  }
+));
+```
 
 #### Authenticate Requests
 
@@ -40,11 +44,13 @@ require session support, so the `session` option can be set to `false`.
 For example, as route middleware in an [Express](http://expressjs.com/)
 application:
 
-    app.get('/private', 
-      passport.authenticate('basic', { session: false }),
-      function(req, res) {
-        res.json(req.user);
-      });
+```javascript
+app.get('/private', 
+  passport.authenticate('basic', { session: false }),
+  function(req, res) {
+    res.json(req.user);
+  });
+```
 
 #### Examples
 
@@ -64,19 +70,21 @@ The strategy also accepts an optional `validate` callback, which receives
 nonce-related `params` that can be further inspected to determine if the request
 is valid.
 
-    passport.use(new DigestStrategy({ qop: 'auth' },
-      function(username, done) {
-        User.findOne({ username: username }, function (err, user) {
-          if (err) { return done(err); }
-          if (!user) { return done(null, false); }
-          return done(null, user, user.password);
-        });
-      },
-      function(params, done) {
-        // validate nonces as necessary
-        done(null, true)
-      }
-    ));
+```javascript
+passport.use(new DigestStrategy({ qop: 'auth' },
+  function(username, done) {
+    User.findOne({ username: username }, function (err, user) {
+      if (err) { return done(err); }
+      if (!user) { return done(null, false); }
+      return done(null, user, user.password);
+    });
+  },
+  function(params, done) {
+    // validate nonces as necessary
+    done(null, true)
+  }
+));
+```
 
 #### Authenticate Requests
 
@@ -87,11 +95,13 @@ require session support, so the `session` option can be set to `false`.
 For example, as route middleware in an [Express](http://expressjs.com/)
 application:
 
-    app.get('/private', 
-      passport.authenticate('digest', { session: false }),
-      function(req, res) {
-        res.json(req.user);
-      });
+```javascript
+app.get('/private', 
+  passport.authenticate('digest', { session: false }),
+  function(req, res) {
+    res.json(req.user);
+  });
+```
 
 #### Examples
 
@@ -99,8 +109,10 @@ For a complete, working example, refer to the [Digest example](https://github.co
 
 ## Tests
 
-    $ npm install --dev
-    $ make test
+```sh
+$ npm install --dev
+$ make test
+```
 
 [![Build Status](https://secure.travis-ci.org/jaredhanson/passport-http.png)](http://travis-ci.org/jaredhanson/passport-http)
 
