@@ -14,7 +14,7 @@ test:
 # Static Analysis
 # ==============================================================================
 
-JSHINT = jshint
+JSHINT = ./node_modules/.bin/jshint
 
 hint: lint
 lint:
