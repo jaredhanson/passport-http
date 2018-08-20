@@ -48,7 +48,7 @@ application:
 
 #### Examples
 
-For a complete, working example, refer to the [Basic example](https://github.com/jaredhanson/passport-http/tree/master/examples/basic).
+For a complete, working example, refer to the [Basic example](https://github.com/passport/express-3.x-http-basic-example).
 
 ## Usage of HTTP Digest
 
@@ -95,7 +95,7 @@ application:
 
 #### Examples
 
-For a complete, working example, refer to the [Digest example](https://github.com/jaredhanson/passport-http/tree/master/examples/digest).
+For a complete, working example, refer to the [Digest example](https://github.com/passport/express-3.x-http-digest-example).
 
 ## Tests
 
@@ -113,3 +113,5 @@ For a complete, working example, refer to the [Digest example](https://github.co
 [The MIT License](http://opensource.org/licenses/MIT)
 
 Copyright (c) 2011-2013 Jared Hanson <[http://jaredhanson.net/](http://jaredhanson.net/)>
+
+<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/vK9dyjRnnWsMzzJTQ57fRJpH/jaredhanson/passport-http'>  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/vK9dyjRnnWsMzzJTQ57fRJpH/jaredhanson/passport-http.svg' /></a>
