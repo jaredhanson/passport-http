@@ -52,6 +52,48 @@ vows.describe('BasicStrategy').addBatch({
     },
   },
 
+  'strategy that verifies a request with additional info': {
+    topic: function() {
+      var strategy = new BasicStrategy(function(userid, password, done) {
+        done(null, { username: userid, password: password }, { foo: 'bar' });
+      });
+      return strategy;
+    },
+
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user, info) {
+          self.callback(null, user, info);
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.error = function() {
+          self.callback(new Error('should not be called'));
+        }
+
+        req.headers = {};
+        req.headers.authorization = 'Basic Ym9iOnNlY3JldA==';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+
+      'should not generate an error' : function(err, user) {
+        assert.isNull(err);
+      },
+      'should authenticate' : function(err, user) {
+        assert.equal(user.username, 'bob');
+        assert.equal(user.password, 'secret');
+      },
+      'should authenticate with additional info' : function(err, user, info) {
+        assert.equal(info.foo, 'bar');
+      },
+    },
+  },
+
   'strategy handling a request that is not verified': {
     topic: function() {
       var strategy = new BasicStrategy(function(userid, password, done) {
