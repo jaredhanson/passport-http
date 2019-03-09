@@ -1,24 +1,7 @@
-SOURCES = lib/**/*.js
+TESTS ?= $(shell find test -type f -name '*-test.js')
 
-# ==============================================================================
-# Node Tests
-# ==============================================================================
-
-VOWS = ./node_modules/.bin/vows
-TESTS ?= test/*-test.js test/**/*-test.js
-
-test:
-	@NODE_ENV=test NODE_PATH=lib $(VOWS) $(TESTS)
-
-# ==============================================================================
-# Static Analysis
-# ==============================================================================
-
-JSHINT = jshint
-
-hint: lint
-lint:
-	$(JSHINT) $(SOURCES)
+include node_modules/make-node/main.mk
 
 
-.PHONY: test hint lint
+# Perform self-tests.
+check: test

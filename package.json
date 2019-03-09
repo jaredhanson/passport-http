@@ -24,10 +24,11 @@
     "passport-strategy": "1.x.x"
   },
   "devDependencies": {
+    "make-node": "0.4.6",
     "vows": "0.8.x"
   },
   "scripts": {
-    "test": "NODE_PATH=lib node_modules/.bin/vows test/*-test.js test/**/*-test.js"
+    "test": "NODE_PATH=lib make test"
   },
   "engines": { "node": ">= 0.4.0" }
 }
