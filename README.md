@@ -14,6 +14,10 @@ middleware, including [Express](http://expressjs.com/).
 
 ---
 
+[![npm](https://img.shields.io/npm/v/passport-http.svg)](https://www.npmjs.com/package/passport-http)
+[![build](https://img.shields.io/travis/jaredhanson/passport-http.svg)](https://travis-ci.org/jaredhanson/passport-http)
+[![coverage](https://img.shields.io/coveralls/jaredhanson/passport-http.svg)](https://coveralls.io/github/jaredhanson/passport-http)
+[...](https://github.com/jaredhanson/passport-http/wiki/Status)
 
 ## Install
 
