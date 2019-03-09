@@ -7,6 +7,7 @@ node_js:
 
 # NOTE: `istanbul` and `coveralls` are pinned for compatibility with node 0.8.
 before_install:
+  - "env"
   - "npm install -g istanbul@0.2.2"
   - "npm install -g coveralls@2.11.4"
 
