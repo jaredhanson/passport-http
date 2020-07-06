@@ -8,6 +8,16 @@ for these schemes can be easily and unobtrusively integrated into any
 application or framework that supports [Connect](http://www.senchalabs.org/connect/)-style
 middleware, including [Express](http://expressjs.com/).
 
+---
+
+<p align="center">
+  <sup>Advertisement</sup>
+  <br>
+  <a href="https://click.linksynergy.com/link?id=D*o7yui4/NM&offerid=507388.1672410&type=2&murl=https%3A%2F%2Fwww.udemy.com%2Fcourse%2Fnodejs-express-mongodb-bootcamp%2F&u1=kLuTIzmrCT1t6LdTW2psh0IyTCmrtTgnUbaS9Ot">Node.js, Express, MongoDB & More: The Complete Bootcamp 2020</a><br>Master Node by building a real-world RESTful API and web app (with authentication, Node. js security, payments & more)
+</p>
+
+---
+
 [![npm](https://img.shields.io/npm/v/passport-http.svg)](https://www.npmjs.com/package/passport-http)
 [![build](https://img.shields.io/travis/jaredhanson/passport-http.svg)](https://travis-ci.org/jaredhanson/passport-http)
 [![coverage](https://img.shields.io/coveralls/jaredhanson/passport-http.svg)](https://coveralls.io/github/jaredhanson/passport-http)
