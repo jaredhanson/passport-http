@@ -52,6 +52,42 @@ vows.describe('BasicStrategy').addBatch({
     },
   },
 
+  'strategy handling a request with a colon in password': {
+    topic: function() {
+      var strategy = new BasicStrategy(function(userid, password, done) {
+        done(null, { username: userid, password: password });
+      });
+      return strategy;
+    },
+
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(null, user);
+        }
+        strategy.fail = function() {
+          self.callback(new Error('should not be called'));
+        }
+
+        req.headers = {};
+        req.headers.authorization = 'Basic VGVzdHVzZXI6MTIzOi4uLg==';
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+
+      'should not generate an error' : function(err, user) {
+        assert.isNull(err);
+      },
+      'should authenticate' : function(err, user) {
+        assert.equal(user.username, 'Testuser');
+        assert.equal(user.password, '123:...');
+      },
+    },
+  },
+
   'strategy handling a request that is not verified': {
     topic: function() {
       var strategy = new BasicStrategy(function(userid, password, done) {
