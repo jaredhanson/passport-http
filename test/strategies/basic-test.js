@@ -440,4 +440,39 @@ vows.describe('BasicStrategy').addBatch({
     },
   },
 
+  'strategy with xhrChallengeType option on xhr request': {
+    topic: function() {
+      var strategy = new BasicStrategy({ xhrChallengeType: 'xBasic' }, function(userid, password, done) {
+        done(null, false);
+      });
+      return strategy;
+    },
+    
+    'after augmenting with actions': {
+      topic: function(strategy) {
+        var self = this;
+        var req = {};
+        strategy.success = function(user) {
+          self.callback(new Error('should not be called'));
+        }
+        strategy.fail = function(challenge) {
+          self.callback(null, challenge);
+        }
+        
+        req.headers = {};
+        req.headers.authorization = 'Basic Ym9iOnNlY3JldA==';
+        req.xhr = true;
+        process.nextTick(function () {
+          strategy.authenticate(req);
+        });
+      },
+      
+      'should fail authentication with challenge' : function(err, challenge) {
+        // fail action was called, resulting in test callback
+        assert.isNull(err);
+        assert.equal(challenge, 'xBasic realm="Users"');
+      },
+    },
+  },
+
 }).export(module);
