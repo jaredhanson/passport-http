@@ -41,6 +41,8 @@ The HTTP Basic authentication strategy authenticates users using a userid and
 password.  The strategy requires a `verify` callback, which accepts these
 credentials and calls `done` providing a user.
 
+const {BasicStrategy} = require('passport-http');
+
     passport.use(new BasicStrategy(
       function(userid, password, done) {
         User.findOne({ username: userid }, function (err, user) {
