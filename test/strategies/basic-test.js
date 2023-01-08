@@ -288,7 +288,7 @@ vows.describe('BasicStrategy').addBatch({
       'should fail authentication with challenge' : function(err, challenge) {
         // fail action was called, resulting in test callback
         assert.isNull(err);
-        assert.equal(challenge, 400);
+        assert.equal(challenge, 401);
       },
     },
   },
@@ -322,7 +322,7 @@ vows.describe('BasicStrategy').addBatch({
       'should fail authentication with challenge' : function(err, challenge) {
         // fail action was called, resulting in test callback
         assert.isNull(err);
-        assert.equal(challenge, 400);
+        assert.equal(challenge, 401);
       },
     },
   },
